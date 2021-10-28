@@ -1,4 +1,49 @@
 body {
     background-color: azure;
     text-align: center;
+    margin-top:35px;
+}
+select {
+    border: 1px solid green;
+    box-shadow: 0 0 15px green ;
+    background-color: rgba(211, 245, 190, 0.47);
+    border-radius: 50%;
+    height: 55px;
+    width: 55px;
+    text-align: center;
+    font-weight: bolder;
+    padding: 3px;
+    margin-right: 10px;
+}
+#images {
+    text-align: center;
+    position: relative;
+    margin-left: 100px;
+}
+img {
+    position: absolute;
+    width: 700px;
+    left: 0;
+
+}
+.xSigne {
+    position: absolute;
+    /*left: 3px;
+    top: -11px;*/
+    font-weight: bold;
+    font-size: 22px;
+}
+#xSigne1 {
+    position: absolute;
+    left: 22px;
+    top: 8px;
+    font-weight: bold;
+    font-size: 22px;
+}
+.caseBox {
+    /*left: 15px;*/
+    /*top: 90px;*/
+    position: absolute;
+    width: 112px;
+    height:152px;
 }
