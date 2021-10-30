@@ -1,30 +1,39 @@
 lotto = {
-    startNumber: 1,
-    endNumber: 45,
-    drawNumber: 6,
-    naxDrawCase: 12,
-    numSelected: [],
-    numbers: [],
-    allNumbers: [],
-    numberPrint: 0,
-    _divNumbers: document.querySelectorAll( '#numbers' )[ 0 ],
-    _divPrintHistory: document.querySelectorAll( '#printHistory' )[ 0 ],
-    _divHistory: document.querySelectorAll( '#history' )[ 0 ],
-    _divClearScreen: document.querySelectorAll( '#clearScreen' )[ 0 ],
-    _divSelect: document.querySelectorAll( '#select' )[ 0 ],
-    _divBigCase: document.querySelectorAll( '#bigCase' )[ 0 ],
-    _divNumGene: document.querySelectorAll( '#numGene' )[ 0 ],
-    generator: function ( size, numStart, numEnd ) {
+    startNumber:1,
+    endNumber:45,
+    drawNumber:6,
+    naxDrawCase:12,
+    numSelected:[],
+    numbers:[],
+    allNumbers:[],
+    numberPrint:0,
+    _divNumbers:document.querySelectorAll( '#numbers' )[ 0 ],
+    _divPrintHistory:document.querySelectorAll( '#printHistory' )[ 0 ],
+    _divHistory:document.querySelectorAll( '#history' )[ 0 ],
+    _divClearScreen:document.querySelectorAll( '#clearScreen' )[ 0 ],
+    _divSelect:document.querySelectorAll( '#select' )[ 0 ],
+    _divBigCase:document.querySelectorAll( '#bigCase' )[ 0 ],
+    _divNumGene:document.querySelectorAll( '#numGene' )[ 0 ],
+    _btnHistory:document.getElementsByClassName( 'btnHistory' ),
+    _btnClearScreen:document.getElementsByClassName( 'btnClearScreen' ),
+
+    /**
+     *
+     * @param size
+     * @param numStart
+     * @param numEnd
+     */
+    generator:function ( size, numStart, numEnd ) {
         this.numbers = []
         if ( this.allNumbers && this.allNumbers.length >= 11 ) {
             document.getElementById( 'btnGenerator' ).classList.add( 'disabled' );
             document.getElementById( 'btnGenerator' ).innerHTML = 'You make 12';
         }
         this.divChildRemove( this._divNumbers )
-        for ( var i = 0; i < size; i++ ) {
-            var add = true;
-            var randomNumber = Math.floor( Math.random() * numEnd ) + numStart;
-            for ( var y = 0; y < numEnd; y++ ) {
+        for ( let i = 0; i < size; i++ ) {
+            let add = true;
+            const randomNumber = Math.floor( Math.random() * numEnd ) + numStart;
+            for ( let y = 0; y < numEnd; y++ ) {
                 if ( this.numbers[ y ] === randomNumber ) {
                     add = false;
                 }
@@ -39,13 +48,20 @@ lotto = {
         this.printNum( this.numbers, 'numbers' );
         this.setAllNumbers( this.numbers );
         this.xSigne()
+        // write in div history  // 2 time // 1st to refresh and 2nd return to the initial display
+        this.printHistory();
+        this.printHistory();
     },
 
     //region function to order the Array
-    numOrder: function ( numbers ) {
-        var bigNumber = 0;
-        for ( var m = 0; m < numbers.length; m++ ) {
-            for ( var n = m + 1; n < numbers.length; n++ ) {
+    /**
+     * order the numbers from smallest to largest
+     * @param numbers
+     */
+    numOrder:function ( numbers ) {
+        let bigNumber = 0;
+        for ( let m = 0; m < numbers.length; m++ ) {
+            for ( let n = m + 1; n < numbers.length; n++ ) {
                 if ( numbers[ n ] < numbers[ m ] ) {
                     bigNumber = numbers[ m ];
                     numbers[ m ] = numbers[ n ];
@@ -57,8 +73,12 @@ lotto = {
     },
     //endregion
 
-    // we make our history
-    setAllNumbers: function ( numbers ) {
+
+    /**
+     * we make our history
+     * @param numbers
+     */
+    setAllNumbers:function ( numbers ) {
         // put the history btn
         this.allNumbers.length <= 0 ? this.btnHistory() : '';
         this.allNumbers.length <= 0 ? this.btnClearScreen() : '';
@@ -66,137 +86,166 @@ lotto = {
         this.allNumbers.push( numbers );
     },
 
-    // make btn history
-    btnGenerator: function () {
-        var div = document.querySelectorAll( '#numGene' )[ 0 ];
-        var btn = document.createElement( 'button' );
-        var txt = 'lotto.generator( ' + this.drawNumber + ',' + this.startNumber + ',' + this.endNumber + ');'
+
+    /**
+     * make button generator
+     */
+    btnGenerator:function () {
+        let btn = this._e( 'button' );
+        let txt = 'lotto.generator( ' + this.drawNumber + ',' + this.startNumber + ',' + this.endNumber + ');'
         btn.id = 'btnGenerator';
         btn.classList.add( 'btn', 'btn-sm', 'btn-primary' );
         btn.style.margin = '20px'
         btn.style.borderRadius = '15px'
         btn.setAttribute( 'onclick', txt )
         btn.innerHTML = 'Generate'
-        div.appendChild( btn );
+        this._divNumGene.appendChild( btn );
     },
 
-    printNum: function ( numbers, parent ) {
-        var divs = document.querySelectorAll( '#' + parent )[ 0 ];
-        var div = document.createElement( 'div' );
-        var divClass = 'num-' + parent;
+    /**
+     * display array numbers, then we add the separator '-' between the numbers
+     * @param numbers
+     * @param parent
+     */
+    printNum:function ( numbers, parent ) {
+        let divs = document.querySelectorAll( '#' + parent )[ 0 ];
+        let div = this._e( 'div' );
+        let divClass = 'num-' + parent;
         div.classList.add( divClass );
         div.innerHTML = numbers.join( " - " );
         divs.appendChild( div )
     },
 
-    btnHistory: function () {
-        var div = document.querySelectorAll( '#history' )[ 0 ];
-        var btn = document.createElement( 'button' );
+    /**
+     * make button history
+     */
+    btnHistory:function () {
+        let btn = this._e( 'button' );
         btn.id = 'btnHistory';
-        btn.classList.add( 'btn', 'btn-sm', 'btn-success' );
+        btn.classList.add( 'btn', 'btn-sm', 'btn-success', 'btnHistory' );
         btn.style.margin = '20px'
         btn.style.borderRadius = '15px'
         btn.setAttribute( 'onclick', 'lotto.printHistory();' )
         btn.innerHTML = 'History'
-        div.appendChild( btn );
+        this._divHistory.appendChild( btn );
     },
 
-    printHistory: function () {
+    /**
+     * print the history of all numbers
+     */
+    printHistory:function () {
         this.divChildRemove( this._divPrintHistory );
         for ( let i = 0; i < this.allNumbers.length; i++ ) {
             this.printNum( this.allNumbers[ i ], 'printHistory' );
         }
+        if ( this._divPrintHistory.classList.contains( 'd-none' ) ) {
+            this._divPrintHistory.classList.remove( 'd-none' );
+        } else {
+            this._divPrintHistory.classList.add( 'd-none' );
+        }
     },
 
-    // if the div has child we remove all what in side
-    divChildRemove: function ( parent ) {
+
+    /**
+     * if the div has child we remove all what in side
+     * @param parent
+     */
+    divChildRemove:function ( parent ) {
         if ( parent.hasChildNodes() ) {
             parent.innerHTML = '';
         }
     },
 
-    // we edit our array  in X position 
-    editNum: function ( pos, numbers ) {
+    //
+    /**
+     * we edit our array  in X position
+     * in the todo list
+     * @param pos
+     * @param numbers
+     */
+    editNum:function ( pos, numbers ) {
         this.allNumbers[ pos ] = numbers;
     },
 
     //region Clear function button and action
-    // creat button Clear Screen
-    btnClearScreen: function () {
-        var div = document.querySelectorAll( '#clearScreen' )[ 0 ];
-        var btn = document.createElement( 'button' );
+    /**
+     * creat button Clear Screen
+     */
+    btnClearScreen:function () {
+        let btn = this._e( 'button' );
         btn.id = 'btnClearScreen';
-        btn.classList.add( 'btn', 'btn-sm', 'btn-danger' );
+        btn.classList.add( 'btn', 'btn-sm', 'btn-danger', 'btnClearScreen' );
         btn.style.margin = '20px'
         btn.style.borderRadius = '15px'
         btn.setAttribute( 'onclick', 'lotto.clearScreen();' )
         btn.innerHTML = 'Clear all'
-        div.appendChild( btn );
+        this._divClearScreen.appendChild( btn );
     },
-
-    //Clear screen function
-    clearScreen: function () {
+    //
+    /**
+     * Clear all data and texts on the screen
+     */
+    clearScreen:function () {
         this.numbers = [];
         this.allNumbers = [];
         this.numberPrint = 0;
         this._divNumbers.innerHTML = '';
         this._divPrintHistory.innerHTML = '';
+        this._divPrintHistory.classList.contains( 'd-none' ) ? this._divPrintHistory.classList.remove( 'd-none' ) : '';
         this._divHistory.innerHTML = '';
         this._divClearScreen.innerHTML = '';
         this._divBigCase.innerHTML = '';
-        this._divNumGene.innerHTML = ''
-        this.btnGenerator()
+        this._divNumGene.innerHTML = '';
+        this.btnSendInputReset();
+        this.selectedReset();
+        this.btnGenerator();
     },
     //endregion
 
-    myHidden: function ( id ) {
-        let elm = document.getElementById( id );
-        elm.style.display = 'none';
-    },
-
     //region input Select section
-    divSelect: function () {
-        let selectNum = 1;
-        this.numSelected ? selectNum = this.numSelected.length + 1 : '';
+    /**
+     *
+     */
+    divSelect:function () {
         let jump = false;
-        let idTxt = 'select-' + selectNum;
-        let idTxtBefore = 'select-' + (selectNum - 1);
-        let selectList = document.createElement( 'select' );
+        let idTxt = 'select-' + this.numSelected.length + 1;
+        let selectList = this._e( 'select' )
 
-        if ( selectNum <= this.drawNumber ) {
+        if ( this.numSelected.length + 1 <= this.drawNumber ) {
             selectList.id = idTxt
             selectList.setAttribute( 'name', idTxt );
             selectList.setAttribute( 'onchange', 'lotto.nextDivSelect(this)' );
             selectList.classList.add( 'select-list' );
             this._divSelect.appendChild( selectList );
-            let option = document.createElement( "option" );
+            let option = this._e( 'option' );
             option.text = '...';
             selectList.appendChild( option );
             for ( let i = this.startNumber; i <= this.endNumber; i++ ) {
                 if ( this.numSelected ) {
                     for ( let j = 0; j < this.numSelected.length; j++ ) {
-                        if ( i === (this.numSelected[ j ] * 1) ) {
+                        if ( i === ( this.numSelected[ j ] * 1 ) ) {
                             jump = true;
                         }
                     }
                 }
                 if ( !jump ) {
-                    option = document.createElement( "option" );
+                    option = this._e( 'option' );
                     option.value = i;
                     option.text = i;
                     selectList.appendChild( option );
                 }
                 jump = false;
             }
-        } else {
-            this.nextDivSelect( document.getElementById(idTxtBefore) )
         }
     },
 
-    nextDivSelect: function ( e ) {
+    /**
+     *
+     * @param e
+     */
+    nextDivSelect:function ( e ) {
         //this.numSelected.push(e.value);
-        if ( this.numSelected && this.numSelected.length <= this.drawNumber - 1) {
-            console.log(this.numSelected.length , this.drawNumber)
+        if ( this.numSelected && this.numSelected.length <= this.drawNumber - 1 ) {
             this.numSelected.push( e.value );
             document.getElementById( e.id ).disabled = true;
         }
@@ -206,11 +255,13 @@ lotto = {
             this.btnSendInput();
             this.btnSendInputReset()
         }
-        console.log(this.numSelected);
     },
 
-    btnSendInput: function () {
-        let btn = document.createElement( 'button' );
+    /**
+     * creat button add (send)
+     */
+    btnSendInput:function () {
+        let btn = this._e( 'button' );
         btn.id = 'btnSendInput';
         btn.classList.add( 'btn', 'btn-sm', 'btn-primary' );
         btn.style.width = '55px';
@@ -220,77 +271,95 @@ lotto = {
         btn.innerHTML = 'Add';
         this._divSelect.appendChild( btn );
     },
-    btnSendInputReset: function () {
-        let btn = document.createElement( 'button' );
+
+    /**
+     * creat button reset
+     */
+    btnSendInputReset:function () {
+        let btn = this._e( 'button' );
         btn.id = 'btnSendInputReset';
         btn.classList.add( 'btn', 'btn-sm', 'btn-danger' );
         btn.style.width = '55px';
         btn.style.height = '55px';
         btn.style.marginLeft = '10px';
         btn.style.borderRadius = '50%';
-        btn.setAttribute( 'onclick', 'lotto.selectReset(this)' );
+        btn.setAttribute( 'onclick', 'lotto.selectedReset(this)' );
         btn.innerHTML = 'reset';
         this._divSelect.appendChild( btn );
     },
 
-    selectReset: function ( e ) {
+    /**
+     * remove all children and clear array
+     * restart from the 1st ball
+     */
+    selectedReset:function () {
         let parent = document.getElementById( "btnSendInputReset" ).parentElement;
-        while (parent.firstChild) {
-            parent.removeChild(parent.lastChild);
+        while ( parent.firstChild ) {
+            parent.removeChild( parent.lastChild );
         }
         this.numSelected = [];
         this.divSelect();
     },
 
-    putInput: function (  ) {
-        if ( this.numSelected ){
+    /**
+     * push our selected number to the array
+     * we call xSigne function to make the tick
+     * reset the array and add 'add' and reset button
+     * print on history
+     */
+    putInput:function () {
+        if ( this.numSelected ) {
             this.allNumbers.push( this.numSelected );
-            this.btnHistory();
             this.xSigne();
+            this.selectedReset();
+            this._btnHistory && this._btnHistory.length < 1 ? this.btnHistory() : '';
+            this._btnClearScreen && this._btnClearScreen.length < 1 ? this.btnClearScreen() : '';
+            // write in div history  // 2 time // 1st to refresh and 2nd return to the initial display
+            this.printHistory();
+            this.printHistory();
         }
     },
     //endregion
 
     //region make signe over the pic
-    xSigne: function () {
+    /**
+     * we tick our array numbers on the Lotto grid (image)
+     */
+    xSigne:function () {
         // num in case left +19px, top +19px
-        //case left +111px top + px
-        // const caseBoxWidth = 112;
-        // const caseBoxHeight = 152;
+        //case left +111px top + 152px
         const caseBoxLeft = 15;
         const caseBoxTop = 90;
 
         const pLeft = 3;
         const pTop = -11;
-        //const fSize = 22;
         let loop = 0;
         // remove all before we write
         this._divBigCase.innerHTML = '';
 
         if ( this.allNumbers ) {
             for ( const table of this.allNumbers ) {
-                loop++
+                loop++;
                 let idName = 'case-' + loop;
-                let divCase = document.createElement( 'div' );
+                let divCase = this._e( 'div' );
                 divCase.id = idName;
-                divCase.classList.add( 'caseBox' )
+                divCase.classList.add( 'caseBox' );
                 if ( loop <= 6 ) {
-                    divCase.style.left = (caseBoxLeft + (loop - 1) * 111) + 'px';
+                    divCase.style.left = ( caseBoxLeft + ( loop - 1 ) * 111 ) + 'px';
                     divCase.style.top = caseBoxTop + 'px';
                 } else {
-                    divCase.style.left = (caseBoxLeft + (loop - 7) * 111) + 'px';
-                    divCase.style.top = (caseBoxTop + 152) + 'px';
+                    divCase.style.left = ( caseBoxLeft + ( loop - 7 ) * 111 ) + 'px';
+                    divCase.style.top = ( caseBoxTop + 152 ) + 'px';
                 }
-                document.getElementById( 'bigCase' ).appendChild( divCase );
+                this._divBigCase.appendChild( divCase );
                 for ( const num of table ) {
                     let x = num % 6;
                     let y = Math.floor( num / 6 )
                     x === 0 ? x = 6 : y++;
-
-                    let ele = document.createElement( 'div' );
+                    let ele = this._e( 'div' );
                     ele.innerHTML = 'x';
-                    ele.style.left = (pLeft + (x * 19) - 19) + 'px';
-                    ele.style.top = (pTop + (y * 19) - 19) + 'px';
+                    ele.style.left = ( pLeft + ( x * 19 ) - 19 ) + 'px';
+                    ele.style.top = ( pTop + ( y * 19 ) - 19 ) + 'px';
                     ele.classList.add( 'xSigne' );
                     divCase.appendChild( ele );
                 }
@@ -298,6 +367,15 @@ lotto = {
         }
     },
     //endregion
+    /**
+     *
+     * @param e
+     * @returns {*} // element
+     * @private
+     */
+    _e:function ( e ) {
+        return document.createElement( e );
+    }
 }
 lotto.btnGenerator();
 lotto.divSelect();

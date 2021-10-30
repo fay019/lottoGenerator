@@ -1,7 +1,8 @@
 body {
     background-color: azure;
-    text-align: center;
+    /*text-align: center;*/
     margin-top:35px;
+    margin-left: 35px;
 }
 select {
     border: 1px solid green;
@@ -14,6 +15,16 @@ select {
     font-weight: bolder;
     padding: 3px;
     margin-right: 10px;
+    margin-bottom: 15px;
+}
+#select {
+    margin: 0 8%;
+    display: inline;
+}
+#select::before {
+    content: "Make your numbers";
+    margin-right: 10px;
+    font-size: 1.4em;
 }
 #images {
     text-align: center;
@@ -46,4 +57,22 @@ img {
     position: absolute;
     width: 112px;
     height:152px;
+}
+#printHistory {
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+    margin-bottom: 35px;
+    padding: 30px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    border-radius: 30px;
+    width: 260px;
+    background-color: rgba(211, 245, 190, 0.47);
+}
+#historyScreen {
+    display: flex;
+}
+.num-numbers {
+    font-size: 2em;
+    margin: 25px 0;
 }
