@@ -12,13 +12,13 @@ lotto = {
     _divHistory: document.querySelectorAll( '#history' )[ 0 ],
     _divClearScreen: document.querySelectorAll( '#clearScreen' )[ 0 ],
     _divSelect: document.querySelectorAll( '#select' )[ 0 ],
-    _divBigCase: document.querySelectorAll( '#bigCase')[0],
-    _divNumGene: document.querySelectorAll( '#numGene')[0],
+    _divBigCase: document.querySelectorAll( '#bigCase' )[ 0 ],
+    _divNumGene: document.querySelectorAll( '#numGene' )[ 0 ],
     generator: function ( size, numStart, numEnd ) {
         this.numbers = []
         if ( this.allNumbers && this.allNumbers.length >= 11 ) {
-            document.getElementById('btnGenerator').classList.add('disabled');
-            document.getElementById('btnGenerator').innerHTML = 'You make 12';
+            document.getElementById( 'btnGenerator' ).classList.add( 'disabled' );
+            document.getElementById( 'btnGenerator' ).innerHTML = 'You make 12';
         }
         this.divChildRemove( this._divNumbers )
         for ( var i = 0; i < size; i++ ) {
@@ -149,75 +149,79 @@ lotto = {
     },
     //endregion
 
-    myHidden: function (id) {
-        let elm = document.getElementById(id);
+    myHidden: function ( id ) {
+        let elm = document.getElementById( id );
         elm.style.display = 'none';
     },
 
     //region input Select section
     divSelect: function () {
-
         let selectNum = 1;
         this.numSelected ? selectNum = this.numSelected.length + 1 : '';
         let jump = false;
-
-        let selectList = document.createElement( 'select' );
         let idTxt = 'select-' + selectNum;
-        selectList.id = idTxt
-        selectList.setAttribute('name', idTxt);
-        selectList.setAttribute( 'onchange', 'lotto.nextDivSelect(this)' );
-        selectList.classList.add('select-list');
-        this._divSelect.appendChild( selectList );
-        let option = document.createElement( "option" );
-        option.text = '...';
-        selectList.appendChild( option );
+        let idTxtBefore = 'select-' + (selectNum - 1);
+        let selectList = document.createElement( 'select' );
 
-        for ( let i = this.startNumber; i <= this.endNumber; i++ ) {
-            if ( this.numSelected ) {
-                for ( let j = 0; j < this.numSelected.length; j++ ) {
-                    if ( i === (this.numSelected[ j ] * 1 )) {
-                        jump = true;
+        if ( selectNum <= this.drawNumber ) {
+            selectList.id = idTxt
+            selectList.setAttribute( 'name', idTxt );
+            selectList.setAttribute( 'onchange', 'lotto.nextDivSelect(this)' );
+            selectList.classList.add( 'select-list' );
+            this._divSelect.appendChild( selectList );
+            let option = document.createElement( "option" );
+            option.text = '...';
+            selectList.appendChild( option );
+            for ( let i = this.startNumber; i <= this.endNumber; i++ ) {
+                if ( this.numSelected ) {
+                    for ( let j = 0; j < this.numSelected.length; j++ ) {
+                        if ( i === (this.numSelected[ j ] * 1) ) {
+                            jump = true;
+                        }
                     }
                 }
+                if ( !jump ) {
+                    option = document.createElement( "option" );
+                    option.value = i;
+                    option.text = i;
+                    selectList.appendChild( option );
+                }
+                jump = false;
             }
-            if ( !jump ) {
-                option = document.createElement( "option" );
-                option.value = i;
-                option.text = i;
-                selectList.appendChild( option );
-            }
-            jump = false;
+        } else {
+            this.nextDivSelect( document.getElementById(idTxtBefore) )
         }
     },
 
-    nextDivSelect: function (e) {
+    nextDivSelect: function ( e ) {
         //this.numSelected.push(e.value);
-        if ( !this.numSelected ) {
-        } else {
-            this.numSelected.push(e.value);
-            document.getElementById(e.id).disabled = true;
+        if ( this.numSelected && this.numSelected.length <= this.drawNumber - 1) {
+            console.log(this.numSelected.length , this.drawNumber)
+            this.numSelected.push( e.value );
+            document.getElementById( e.id ).disabled = true;
         }
-        if ( this.numSelected.length <= 5 ) {
+        if ( this.numSelected.length <= this.drawNumber - 1 ) {
             this.divSelect();
         } else {
             this.btnSendInput();
             this.btnSendInputReset()
         }
+        console.log(this.numSelected);
     },
 
     btnSendInput: function () {
-        var btn = document.createElement( 'button' );
+        let btn = document.createElement( 'button' );
         btn.id = 'btnSendInput';
         btn.classList.add( 'btn', 'btn-sm', 'btn-primary' );
         btn.style.width = '55px';
         btn.style.height = '55px';
         btn.style.borderRadius = '50%';
-        btn.setAttribute( 'onclick', '#' );
+        btn.setAttribute( 'onclick', 'lotto.putInput(this)' );
         btn.innerHTML = 'Add';
         this._divSelect.appendChild( btn );
     },
-    btnSendInputReset: function (){
-        var btn = document.createElement( 'button' );
+    btnSendInputReset: function () {
+        let btn = document.createElement( 'button' );
         btn.id = 'btnSendInputReset';
         btn.classList.add( 'btn', 'btn-sm', 'btn-danger' );
         btn.style.width = '55px';
@@ -228,8 +232,22 @@ lotto = {
         btn.innerHTML = 'reset';
         this._divSelect.appendChild( btn );
     },
-    selectReset: function(e){
-        console.log(e)
+
+    selectReset: function ( e ) {
+        let parent = document.getElementById( "btnSendInputReset" ).parentElement;
+        while (parent.firstChild) {
+            parent.removeChild(parent.lastChild);
+        }
+        this.numSelected = [];
+        this.divSelect();
+    },
+
+    putInput: function (  ) {
+        if ( this.numSelected ){
+            this.allNumbers.push( this.numSelected );
+            this.btnHistory();
+            this.xSigne();
+        }
     },
     //endregion
 
@@ -252,33 +270,32 @@ lotto = {
         if ( this.allNumbers ) {
             for ( const table of this.allNumbers ) {
                 loop++
-                let idName = 'case-'+loop;
-                let divCase = document.createElement('div');
+                let idName = 'case-' + loop;
+                let divCase = document.createElement( 'div' );
                 divCase.id = idName;
-                divCase.classList.add('caseBox')
+                divCase.classList.add( 'caseBox' )
                 if ( loop <= 6 ) {
-                    divCase.style.left = (caseBoxLeft + (loop-1 )* 111) + 'px';
+                    divCase.style.left = (caseBoxLeft + (loop - 1) * 111) + 'px';
                     divCase.style.top = caseBoxTop + 'px';
                 } else {
-                    divCase.style.left = (caseBoxLeft + (loop-7 )* 111) + 'px';
+                    divCase.style.left = (caseBoxLeft + (loop - 7) * 111) + 'px';
                     divCase.style.top = (caseBoxTop + 152) + 'px';
                 }
-                document.getElementById('bigCase').appendChild(divCase);
+                document.getElementById( 'bigCase' ).appendChild( divCase );
                 for ( const num of table ) {
                     let x = num % 6;
-                    let y = Math.floor(num/6)
+                    let y = Math.floor( num / 6 )
                     x === 0 ? x = 6 : y++;
 
-                    let ele = document.createElement('div');
+                    let ele = document.createElement( 'div' );
                     ele.innerHTML = 'x';
-                    ele.style.left = (pLeft + (x * 19)-19) + 'px';
-                    ele.style.top = (pTop + (y * 19)-19) + 'px';
-                    ele.classList.add('xSigne');
-                    divCase.appendChild(ele);
+                    ele.style.left = (pLeft + (x * 19) - 19) + 'px';
+                    ele.style.top = (pTop + (y * 19) - 19) + 'px';
+                    ele.classList.add( 'xSigne' );
+                    divCase.appendChild( ele );
                 }
             }
         }
-
     },
     //endregion
 }
