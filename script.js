@@ -1,8 +1,13 @@
+
+
+//region our lotto Generator Object
 lotto = {
+    //region the variable section
+    userGenerateNumber:0,
     startNumber:1,
     endNumber:45,
     drawNumber:6,
-    naxDrawCase:12,
+    maxDrawCase:12,
     numSelected:[],
     numbers:[],
     allNumbers:[],
@@ -16,8 +21,32 @@ lotto = {
     _divNumGene:document.querySelectorAll( '#numGene' )[ 0 ],
     _btnHistory:document.getElementsByClassName( 'btnHistory' ),
     _btnClearScreen:document.getElementsByClassName( 'btnClearScreen' ),
+    //endregion
 
+    //region westart our generator from here
     /**
+     *
+     * @param size
+     * @param numStart
+     * @param numEnd
+     */
+    startGenerate:function ( size, numStart, numEnd ) {
+        let userSelect = document.getElementById( 'generator-select' )
+        let value = userSelect.value * 1
+        this.userGenerateNumber = this.userGenerateNumber + value;
+        this.userGenerateNumber < 12 ? this.generatorTime() : userSelect.remove();
+        for ( let i = 0; i < value; i++ ) {
+            this.generator( size, numStart, numEnd )
+        }
+    },
+    //endregion
+
+    //region number generator without duplicate and call function
+    /**
+     * call order function
+     * call print function
+     * call fill function
+     * call draw function
      *
      * @param size
      * @param numStart
@@ -52,8 +81,9 @@ lotto = {
         this.printHistory();
         this.printHistory();
     },
+    //endregion
 
-    //region function to order the Array
+    //region function to order the Array from smallest to largest
     /**
      * order the numbers from smallest to largest
      * @param numbers
@@ -74,25 +104,53 @@ lotto = {
     //endregion
 
 
+    //region Description we fill our array with all numbers we generated or add + add btn history and screen cleaner
     /**
-     * we make our history
+     * we fill our array with all numbers we generated or add
+     * we print our button for  history and screen cleaner
      * @param numbers
      */
     setAllNumbers:function ( numbers ) {
+        console.log(numbers)
         // put the history btn
         this.allNumbers.length <= 0 ? this.btnHistory() : '';
         this.allNumbers.length <= 0 ? this.btnClearScreen() : '';
-
         this.allNumbers.push( numbers );
     },
+    //endregion
 
+    //region Select generator for the user input
+    /**
+     *
+     */
+    generatorTime:function () {
+        let selectDiv = document.getElementById( 'generator-select' );
+        if ( document.getElementById( 'generator-select' ) ) {
+            selectDiv.remove();
+        }
+        selectDiv = this._e( 'select' );
+        selectDiv.id = "generator-select";
+        this._divNumGene.appendChild( selectDiv );
+        let maxGenerate = this.maxDrawCase - this.userGenerateNumber;
 
+        // Create and append the options
+        for ( let i = 0; i < maxGenerate; i++ ) {
+            let option = this._e( "option" );
+            option.value = i + 1;
+            option.text = i + 1;
+            selectDiv.appendChild( option );
+        }
+    },
+    //endregion
+
+    //region creat button for generator
     /**
      * make button generator
      */
     btnGenerator:function () {
+        this.generatorTime();
         let btn = this._e( 'button' );
-        let txt = 'lotto.generator( ' + this.drawNumber + ',' + this.startNumber + ',' + this.endNumber + ');'
+        let txt = 'lotto.startGenerate( ' + this.drawNumber + ',' + this.startNumber + ',' + this.endNumber + ');'
         btn.id = 'btnGenerator';
         btn.classList.add( 'btn', 'btn-sm', 'btn-primary' );
         btn.style.margin = '20px'
@@ -101,7 +159,9 @@ lotto = {
         btn.innerHTML = 'Generate'
         this._divNumGene.appendChild( btn );
     },
+    //endregion
 
+    //region printer // for last generated number or for history div
     /**
      * display array numbers, then we add the separator '-' between the numbers
      * @param numbers
@@ -112,10 +172,12 @@ lotto = {
         let div = this._e( 'div' );
         let divClass = 'num-' + parent;
         div.classList.add( divClass );
-        div.innerHTML = numbers.join( " - " );
+        div.innerHTML = ( parent === 'numbers' ) ? '<br>' + numbers.join( " - " ) : numbers.join( " - " );
         divs.appendChild( div )
     },
+    //endregion
 
+    //region History Section button and action
     /**
      * make button history
      */
@@ -135,6 +197,7 @@ lotto = {
      */
     printHistory:function () {
         this.divChildRemove( this._divPrintHistory );
+        this._divPrintHistory.innerHTML = '<span class="print-text">History</span><br>';
         for ( let i = 0; i < this.allNumbers.length; i++ ) {
             this.printNum( this.allNumbers[ i ], 'printHistory' );
         }
@@ -144,8 +207,9 @@ lotto = {
             this._divPrintHistory.classList.add( 'd-none' );
         }
     },
+    //endregion
 
-
+    //region child remover
     /**
      * if the div has child we remove all what in side
      * @param parent
@@ -155,8 +219,9 @@ lotto = {
             parent.innerHTML = '';
         }
     },
+    //endregion
 
-    //
+    //region edit section // not make it at this moment
     /**
      * we edit our array  in X position
      * in the todo list
@@ -166,6 +231,7 @@ lotto = {
     editNum:function ( pos, numbers ) {
         this.allNumbers[ pos ] = numbers;
     },
+    //endregion
 
     //region Clear function button and action
     /**
@@ -191,11 +257,12 @@ lotto = {
         this.numberPrint = 0;
         this._divNumbers.innerHTML = '';
         this._divPrintHistory.innerHTML = '';
-        this._divPrintHistory.classList.contains( 'd-none' ) ? this._divPrintHistory.classList.remove( 'd-none' ) : '';
+        !this._divPrintHistory.classList.contains( 'd-none' ) ? this._divPrintHistory.classList.add( 'd-none' ) : '';
         this._divHistory.innerHTML = '';
         this._divClearScreen.innerHTML = '';
         this._divBigCase.innerHTML = '';
         this._divNumGene.innerHTML = '';
+        this.userGenerateNumber = 0;
         this.btnSendInputReset();
         this.selectedReset();
         this.btnGenerator();
@@ -317,6 +384,8 @@ lotto = {
             // write in div history  // 2 time // 1st to refresh and 2nd return to the initial display
             this.printHistory();
             this.printHistory();
+            // this.userGenerateNumber = this.userGenerateNumber +1 ;
+            this.startGenerate();
         }
     },
     //endregion
@@ -367,6 +436,8 @@ lotto = {
         }
     },
     //endregion
+
+    //region lib creat element
     /**
      *
      * @param e
@@ -376,6 +447,9 @@ lotto = {
     _e:function ( e ) {
         return document.createElement( e );
     }
+    //endregion
 }
+//endregion
+
 lotto.btnGenerator();
 lotto.divSelect();

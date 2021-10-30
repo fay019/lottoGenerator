@@ -1,13 +1,31 @@
+:root {
+    --green: rgba(211, 245, 190, 0.47);
+}
 body {
     background-color: azure;
-    /*text-align: center;*/
     margin-top:35px;
     margin-left: 35px;
 }
-select {
+h1 {
+    text-align: center;
+    font-size: 7vw;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-image:  linear-gradient(0deg, rgba(67,195,34,0.8323704481792717) 0%, rgba(253,65,45,0.8855917366946778) 100%);
+    /* Set the background size and repeat properties. */
+    background-size: 100%;
+    background-repeat: repeat;
+
+    /* Use the text as a mask for the background. */
+    /* This will show the gradient as a text color rather than element bg. */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
+.select-list {
     border: 1px solid green;
     box-shadow: 0 0 15px green ;
-    background-color: rgba(211, 245, 190, 0.47);
+    background-color: var(--green);
     border-radius: 50%;
     height: 55px;
     width: 55px;
@@ -38,9 +56,6 @@ img {
 
 }
 .xSigne {
-    position: absolute;
-    /*left: 3px;
-    top: -11px;*/
     font-weight: bold;
     font-size: 22px;
 }
@@ -52,22 +67,22 @@ img {
     font-size: 22px;
 }
 .caseBox {
-    /*left: 15px;*/
-    /*top: 90px;*/
     position: absolute;
     width: 112px;
     height:152px;
 }
 #printHistory {
-    /*margin-left: auto;*/
-    /*margin-right: auto;*/
     margin-bottom: 35px;
     padding: 30px;
     text-align: center;
     border: 1px solid #dee2e6;
     border-radius: 30px;
     width: 260px;
-    background-color: rgba(211, 245, 190, 0.47);
+    background-color: var(--green);
+}
+.print-text {
+    font-size: 1.6em;
+    font-weight: bold;
 }
 #historyScreen {
     display: flex;
@@ -75,4 +90,21 @@ img {
 .num-numbers {
     font-size: 2em;
     margin: 25px 0;
+}
+#generator-select {
+    text-align: center;
+    border-radius: 15px;
+    margin: 20px 0;
+    padding: .25rem .5rem;
+}
+.num-numbers {
+    padding: 10px 35px;
+    border-radius: 15px;
+    background-color: var(--green);
+    width: 350px;
+    font-size: 1.4em;
+}
+.num-numbers::before {
+    content: "Last generated number: ";
+    font-size: .8em;
 }
