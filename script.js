@@ -1,9 +1,8 @@
-
-
 //region our lotto Generator Object
 lotto = {
     //region the variable section
     userGenerateNumber:0,
+    fromUser: false,
     startNumber:1,
     endNumber:45,
     drawNumber:6,
@@ -34,9 +33,20 @@ lotto = {
         let userSelect = document.getElementById( 'generator-select' )
         let value = userSelect.value * 1
         this.userGenerateNumber = this.userGenerateNumber + value;
-        this.userGenerateNumber < 12 ? this.generatorTime() : userSelect.remove();
-        for ( let i = 0; i < value; i++ ) {
-            this.generator( size, numStart, numEnd )
+        if ( this.userGenerateNumber < this.maxDrawCase ) {
+            this.generatorTime();
+        } else { // else we remove all select
+            userSelect.remove();
+            this._divSelect.innerHTML = '';
+        }
+        console.log(value)
+        if ( !this.fromUser ){
+            for ( let i = 0; i < value; i++ ) {
+                this.generator( size, numStart, numEnd )
+            }
+        } else {
+            this.fromUser = false;
+            this.userGenerateNumber++
         }
     },
     //endregion
@@ -111,7 +121,7 @@ lotto = {
      * @param numbers
      */
     setAllNumbers:function ( numbers ) {
-        console.log(numbers)
+        console.log( numbers )
         // put the history btn
         this.allNumbers.length <= 0 ? this.btnHistory() : '';
         this.allNumbers.length <= 0 ? this.btnClearScreen() : '';
@@ -384,8 +394,9 @@ lotto = {
             // write in div history  // 2 time // 1st to refresh and 2nd return to the initial display
             this.printHistory();
             this.printHistory();
-            // this.userGenerateNumber = this.userGenerateNumber +1 ;
-            this.startGenerate();
+            this.fromUser = true;
+            //this.userGenerateNumber += 1 ;
+            this.startGenerate( this.drawNumber, this.startNumber, this.endNumber);
         }
     },
     //endregion
