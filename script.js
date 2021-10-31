@@ -38,6 +38,7 @@ lotto = {
         } else { // else we remove all select
             userSelect.remove();
             this._divSelect.innerHTML = '';
+            this._divSelect.classList.add('d-none');
         }
         console.log(value)
         if ( !this.fromUser ){
