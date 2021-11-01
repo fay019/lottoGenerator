@@ -42,7 +42,7 @@ lotto = {
         }
         console.log(value)
         if ( !this.fromUser ){
-            for ( let i = 0; i < value; i++ ) {
+            for ( let n = 0; n < value; n++ ) {
                 this.generator( size, numStart, numEnd )
             }
         } else {
@@ -65,12 +65,12 @@ lotto = {
      */
     generator:function ( size, numStart, numEnd ) {
         this.numbers = []
-        if ( this.allNumbers && this.allNumbers.length >= 11 ) {
+        if ( this.allNumbers && this.allNumbers.length >= this.maxDrawCase - 1 ) {
             document.getElementById( 'btnGenerator' ).classList.add( 'disabled' );
-            document.getElementById( 'btnGenerator' ).innerHTML = 'You make 12';
+            document.getElementById( 'btnGenerator' ).innerHTML = "You made " + this.maxDrawCase +" lucky dip";
         }
         this.divChildRemove( this._divNumbers )
-        for ( let i = 0; i < size; i++ ) {
+        for ( let ii = 0; ii < size; ii++ ) {
             let add = true;
             const randomNumber = Math.floor( Math.random() * numEnd ) + numStart;
             for ( let y = 0; y < numEnd; y++ ) {
@@ -81,7 +81,7 @@ lotto = {
             if ( add ) {
                 this.numbers.push( randomNumber );
             } else {
-                i--;
+                ii--;
             }
         }
         this.numOrder( this.numbers );
@@ -102,11 +102,11 @@ lotto = {
     numOrder:function ( numbers ) {
         let bigNumber = 0;
         for ( let m = 0; m < numbers.length; m++ ) {
-            for ( let n = m + 1; n < numbers.length; n++ ) {
-                if ( numbers[ n ] < numbers[ m ] ) {
+            for ( let nm = m + 1; nm < numbers.length; nm++ ) {
+                if ( numbers[ nm ] < numbers[ m ] ) {
                     bigNumber = numbers[ m ];
-                    numbers[ m ] = numbers[ n ];
-                    numbers[ n ] = bigNumber;
+                    numbers[ m ] = numbers[ nm ];
+                    numbers[ nm ] = bigNumber;
                 }
             }
         }
@@ -145,10 +145,10 @@ lotto = {
         let maxGenerate = this.maxDrawCase - this.userGenerateNumber;
 
         // Create and append the options
-        for ( let i = 0; i < maxGenerate; i++ ) {
+        for ( let ik = 0; ik < maxGenerate; ik++ ) {
             let option = this._e( "option" );
-            option.value = i + 1;
-            option.text = i + 1;
+            option.value = ik + 1;
+            option.text = ik + 1;
             selectDiv.appendChild( option );
         }
     },
@@ -209,8 +209,8 @@ lotto = {
     printHistory:function () {
         this.divChildRemove( this._divPrintHistory );
         this._divPrintHistory.innerHTML = '<span class="print-text">History</span><br>';
-        for ( let i = 0; i < this.allNumbers.length; i++ ) {
-            this.printNum( this.allNumbers[ i ], 'printHistory' );
+        for ( let il = 0; il < this.allNumbers.length; il++ ) {
+            this.printNum( this.allNumbers[ il ], 'printHistory' );
         }
         if ( this._divPrintHistory.classList.contains( 'd-none' ) ) {
             this._divPrintHistory.classList.remove( 'd-none' );
@@ -433,9 +433,9 @@ lotto = {
                     divCase.style.top = ( caseBoxTop + 152 ) + 'px';
                 }
                 this._divBigCase.appendChild( divCase );
-                for ( const num of table ) {
-                    let x = num % 6;
-                    let y = Math.floor( num / 6 )
+                for ( const numOfTable of table ) {
+                    let x = numOfTable % 6;
+                    let y = Math.floor( numOfTable / 6 )
                     x === 0 ? x = 6 : y++;
                     let ele = this._e( 'div' );
                     ele.innerHTML = 'x';
